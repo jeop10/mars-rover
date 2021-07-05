@@ -1,5 +1,7 @@
 ## Mars Rover
 
+![alt text](screenshot.png)
+
 This app will allow you to move a Rovers that sits on Mars, waiting for yours command. 
 
 The rover is sitting on a surface that is 200x200 and cannot escape it, so please don't go over the edge!.
@@ -30,6 +32,9 @@ Where:
 - `F` means Forward.
 - `R` means Right.
 - `L` means Left.
+
+When the rover takes a left or a right turn **it does not** turn on it's on axis changing direction. 
+Rather the vehicle move using side step, which allows it to keep the same direction. 
 
 If you want to start again, you can use the "Clear navigation data".
 
