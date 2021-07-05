@@ -1,62 +1,72 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+## Mars Rover
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This app will allow you to move a Rovers that sits on Mars, waiting for yours command. 
 
-## About Laravel
+The rover is sitting on a surface that is 200x200 and cannot escape it, so please don't go over the edge!.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+# Installation:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Clone the repo.
+- Execute `php artisan migrate`
+- Load you app using the domain assigned to it, and you are ready to go.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Steps to control the rover:
 
-## Learning Laravel
+To control the rover you need to do the following:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Give the starting point of the rover in the following syntax: `N,M` Where `N` and `M` are numbers and can 
+  be any number between `0` and `199`. **IMPORTANT** The position (0,0) is locating on the bottom left of the grid.
+    
+- Select the direction of the where the rover is facing (NORTH/SOUTH/EAST/WEST). 
+  
+- Then you are free to send the command to the Rover using the following syntax: 
+```
+FFRRFFFRL
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+**Commands can be composed of up to 9 instructions.**
 
-## Laravel Sponsors
+Where: 
+- `F` means Forward.
+- `R` means Right.
+- `L` means Left.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+If you want to start again, you can use the "Clear navigation data".
 
-### Premium Partners
+#### Obstacles:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
+The obstacles are generated in real time, this creates an ever-changing surface.
 
-## Contributing
+If the rovers finds an obstacle, the command will be halted and the rover will return to the previous
+safe spot.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
+### Internals. 
 
-## Code of Conduct
+The app work with the following api endpoints:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-## Security Vulnerabilities
+| METHOD |         Endpoint        |                                        Description                                       |
+|:------:|:-----------------------:|:----------------------------------------------------------------------------------------:|
+|   GET  | api/initial-coordinates |               Returns the initial coordinates, if there are not returs null              |
+|   GET  |  api/previous-movements | Returns the previous movements and obstacles, and empty string will be returned if empty |
+|  POST  |   api/set-coordinates   |                                Set the initial coordinates                               |
+|  POST  |     api/send-command    |                               Send The command to the Rover                              |
+|  POST  |   api/clear-navigation  |                       Clears the navigation data from the Database                       |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-## License
+Test can be found in `tests/features` and can be executed using `php artisan test`. 
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+One caveat regarding tests is that they use the `RefreshDatabase` trait, so update your `.env.test` as you see fit.
+
+---
+
+### Considerations and Improvements.
+
+- The movements and obstacles list are only displaying the last 10 items, to improve this: 
+    - The movements and obstacles list can be paginated and request a new page 
+      when the user scroll to the bottom of "card".
+- Instead of generating the obstacles in real time, could be an option to generate the entire 200x200 grid.
+- Various Improvement to the interface:
+    - mobile ready.
+    - improve spacing between elements.
