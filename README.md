@@ -8,7 +8,45 @@ The rover is sitting on a surface that is 200x200 and cannot escape it, so pleas
 
 # Installation:
 
+There are **two** ways to install this app one is using Docker and the other one is just the normal installation
+
+#### Docker Install
+For the docker installation version of this app you will need to edit the docker-compose.yaml.dist
+add modify the arguments `user` and `uid` for the ones that you are using in your current machine. 
+This will ensure that you have the proper permissions to oped/edit the files.
+
+Modify the name of the file from `docker-compose.dist.yaml` to `docker-compose.yaml`
+and execute the following command: 
+
+```
+docker-compose up
+```
+
+This will build the necessary images and containers and initilice them.   
+
+After the containers are running you need to execute two more commands
+
+```
+docker exec marsroversapp bash
+```
+
+That will get you inside the app container, then copy and paste this command:
+
+```
+composer install && cp .env.docker .env && php artisan key:generate && php artisan migrate
+```
+
+That will install all composer dependencies, create a .env file and generate a key to be used by laravel and execute 
+the migrations.
+
+To finish you will find the mars rover app in `http://localhost:8081/`
+
+#### Normal Install
+Make sure you have all the minimum requirements of [Laravel](https://laravel.com/docs/8.x/deployment#server-requirements) 8 in your machine
+And that you do have a MySQL/MariaDB database version >=5.7+.
+
 - Clone the repo.
+- Run `composer install`  
 - Execute `php artisan migrate`
 - Load you app using the domain assigned to it, and you are ready to go.
 
